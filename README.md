@@ -13,7 +13,7 @@ This crate does both of these things.
 
 | Benchmark | Base (Web) | λ-Wasm (Web) | Base (Native) | λ-Wasm (Native) |
 | --- | ---: | ---: | ---: | ---: |
-| fib 20 | 24658ns | 25300ns | 14128ns | 13934ns |
+| fib 20 | 31231ns | 31210ns | 19135ns | 19129ns |
 
 ## Features
 
