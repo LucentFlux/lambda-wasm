@@ -1,0 +1,38 @@
+name: Benchmark
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  benchmark:
+    name: Run benchmarks
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+      
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "latest"
+      - run: sudo npm install -g @wasmer/cli
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - run: cargo install cargo-wasi
+      - run: cargo wasi build --bench=benches --release
+      - run: cp `ls -t target/wasm32-wasi/release/deps/*.wasm | head -n 1` benches.wasm
+      
+      - run: wasmer-js run --dir=. benches.wasm -- --bench --save-baseline web
+      - run: cargo bench --bench=benches -- --save-baseline native
+
+      - run: python3 ./scripts/update_readme_benchmarks.py
+      - run: |
+          cat README.md
+          git add README.md
+          git commit -m "Benchmark"
+          git push

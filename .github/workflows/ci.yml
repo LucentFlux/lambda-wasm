@@ -1,0 +1,31 @@
+name: CI
+on: [pull_request]
+
+jobs:
+  cargo-check:
+    name: Cargo check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+      - run: cargo check --all-targets
+  cargo-clippy:
+    name: Cargo clippy
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+      - run: cargo clippy --all-targets --all-features -- -D warnings
+  cargo-test:
+    name: Cargo test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+      - run: cargo test
